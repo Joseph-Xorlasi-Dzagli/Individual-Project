@@ -46,19 +46,18 @@ public class Main {
     static String[] ProcessRequest(String filepath) {
         String[] Data = new String[4];
         String[] temp;
-        int i = -1;
+        int i = 0;
         String s;
 
         try {
             BufferedReader br = new BufferedReader(
                     new FileReader(filepath));
-            while ((s = br.readLine()) != null) {
-                i = i + 1;
+            while ((s = br.readLine()) != null && i<3) {
                 temp = s.split(",");
                 Data[i] = temp[0];
-                i = i + 1;
+                i++;
                 Data[i] = temp[1];
-                System.out.println(s);
+                i++;
             }
             br.close();
         } catch (IOException ex) {
@@ -66,16 +65,6 @@ public class Main {
         }
         return Data; //     Data = [Source City, Source Country, Destination City, Destination Country]
     }
-
-
-
-
-//    static double Heuristic(Airport SourceAirport, Airport DestinationAirport) {
-//        float a = (Math.abs(SourceAirport.Latitude - DestinationAirport.Latitude) + Math.abs(SourceAirport.Longitude - DestinationAirport.Longitude));
-//
-//        return Math.sqrt((a < 0) ? -1 * a : a);
-//    }
-
 
 
 //    Code assistance from https://www.w3resource.com/java-exercises/basic/java-basic-exercise-36.php
@@ -90,10 +79,7 @@ public class Main {
     }
 
 
-
-
     static Airport findAirportClass(String City, String Country) {
-//        System.out.println(City);
         try {
             BufferedReader br = new BufferedReader(
                     new FileReader(Directory + "Airports.csv"));
@@ -104,7 +90,6 @@ public class Main {
             while ((s = br.readLine()) != null) {
                 String[] attributes = s.split(",");
 
-//                System.out.println(s);
                 if (attributes[2].contains(City) && attributes[3].contains(Country)) {
 
                     return new Airport(s);
@@ -120,7 +105,6 @@ public class Main {
     }
 
 
-//
     static Airport findDAirportClass(String City, String Country) {
          Airport Destination = null;
         try {
@@ -134,13 +118,12 @@ public class Main {
             String[] Airport;
             while ((s = br.readLine()) != null) {
                 attributes = s.split(",");
-
-                BufferedReader rbr = new BufferedReader(
-                        new FileReader(Directory + "routes.csv"));
-
                 if (attributes[2].contains(City) && attributes[3].contains(Country)) {
 
                     Destination = new Airport(s);
+
+                    BufferedReader rbr = new BufferedReader(
+                        new FileReader(Directory + "routes.csv"));
 
                     while ((t = rbr.readLine()) != null) {
                         rattributes = t.split(",");
@@ -154,9 +137,9 @@ public class Main {
         } catch (NullPointerException | IOException ne) {
             ne.printStackTrace();
         }
+        System.out.println("We Couldn't find travel Destination")
         return null;
     }
-
 
 
     static Airport findAirportClass(int AirportID) {
@@ -200,14 +183,6 @@ public class Main {
     }
 
 
-
-
-
-
-
-
-
-
     static List<Airport> findAllDestinationAirports(Airport SourceAirportID) {
         int counter = 0;
         List<Airport> Destination = new ArrayList<>();
@@ -235,18 +210,13 @@ public class Main {
     }
 
 
-
-    static String printResults(String[] route){
+    static String printResults(String[] route, String Scity, String Dcity){
         List<Airport> Airports = new ArrayList<>();
-        List<Airline> Airline = new ArrayList<>();
         List<Route> Routes = new ArrayList<>();
         for(int i = 0; route[i]!= null; i++) {
             Airports.add(findAirportClass(route[i]));
-            System.out.println(route[i]);
-
-
             if (i > 0 && route[i] != null) {
-                System.out.println(Airports.get(i).getAirportID());
+
                 try {
                     BufferedReader br = new BufferedReader(
                             new FileReader(Directory + "routes.csv"));
@@ -256,19 +226,14 @@ public class Main {
                     while ((s = br.readLine()) != null) {
                         attributes = s.split(",");
                         if ((attributes[2].contains(Airports.get(i-1).getIATA()) || attributes[2].contains(Airports.get(i-1).getICAO())) && (attributes[4].contains(Airports.get(i).getIATA()) || attributes[4].contains(Airports.get(i).getICAO()))) {
-                            System.out.println(s);
-                            System.out.println("added");
+
                             Routes.add(new Route(s));
                         }
                     }
                 }  catch (NullPointerException | IOException ne) {
                     ne.printStackTrace();
                 }
-                System.out.println(Routes);
-//                if (i > 0) {
-//                    Airline.add(findAirlineClass(Integer.toString(Airports.get(i - 1).airportID), Integer.toString(Airports.get(i).airportID)));
-//                    System.out.println(Airline);
-//                }
+
             }
 
         }
@@ -276,8 +241,7 @@ public class Main {
         int totalstops = 0;
         try {
             BufferedWriter bw = new BufferedWriter(
-                    new FileWriter(Directory + "_output.txt"));
-
+                    new FileWriter(Directory +Scity+ "_" + Dcity+  "_output.txt"));
 
 
             for(int i = 1; route[i]!= null; i++) {
@@ -298,7 +262,7 @@ public class Main {
 
 
     static String[] findroute() {
-        String[] Data = ProcessRequest( "Accra_Winnipeg");
+        String[] Data = ProcessRequest( "Accra_Winnipeg.txt");
 
         String[] route = new String[100];
 
@@ -349,7 +313,6 @@ public class Main {
                     }
                 }
             }
-            System.out.println(Arrays.toString(route));
             j = j + 1;
             route[j] = min.getAirportName();
         }
@@ -364,18 +327,10 @@ public class Main {
     public static void main(String[] args) {
         String Directory = "C:\\Users\\joseph.dzagli\\OneDrive - Ashesi University\\Canvas\\Intermediate Computer Programming\\";
         findroute();
-//        try {
-//            BufferedReader br = new BufferedReader(
-//                    new FileReader(Directory + "airports.csv"));
-//
-//
-//
-//        }  catch (NullPointerException | IOException ne) {
-//            ne.printStackTrace();
-//        }
+
+
 
     }
 }
 
-//&& findAirlineClass(Integer.toString(min.airportID), Integer.toString(Destinations.get(i).airportID)) != null
 
