@@ -12,7 +12,7 @@ import java.util.List;
 
 public class Main {
 
-    static String Directory = "C:\\Users\\joseph.dzagli\\OneDrive - Ashesi University\\Canvas\\Intermediate Computer Programming\\";
+    static String Directory = "C:\\Users\\joseph.dzagli\\OneDrive - Ashesi University\\Canvas\\Intermediate Computer Programming\\Github\\Individual-Project\\Individual Project\\src\\com\\company";
 
     static String Request() {
         Scanner SourceCity = new Scanner(System.in);
